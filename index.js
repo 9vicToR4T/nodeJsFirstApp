@@ -1,51 +1,83 @@
-const yargs = require("yargs");
-const pkg = require("./package.json");
-// node are acces la toate fisierele si le putem obtine in forma de obiecte
+const http = require("http");
+const chalk = require("chalk");
+const fs = require("fs/promises");
+const path = require("path");
+const { addNote } = require("./notes.controler.js");
+const express = require("express")
 
-const { addNote, printNotes, removeNote } = require("./notes.controler");
+const port = 3000;
+const basePath = path.join(__dirname, "pages");
 
-yargs.version(pkg.version);
-// --version
 
-yargs.command({
-  command: "add",
-  describe: "Add new note to list",
-  builder: {
-    title: {
-      type: "string",
-      describe: "Note title",
-      demandOption: true,
-    },
-  },
-  handler({ title }) {
-    addNote(title);
-  },
+const app = express()
+app.use(express.urlencoded({
+  extended: true
+}))
+
+app.get("/", (req, res) =>{
+  res.sendFile(path.join(basePath, "index.html"))
+})
+
+app.post("/", async (req, res) => {
+  console.log(req.body, "rb")
+  await addNote(req.body.title)
+  res.sendFile(path.join(basePath, "index.html"));
+  
 });
 
-yargs.command({
-  command: "list",
-  describe: "Print all notes",
-  async handler() {
-    const notes = await printNotes();
-  },
+
+app.listen(port, () => {
+  console.log(chalk.green(`Server has been started on port ${port}...`));
 });
 
-yargs.command({
-  command: "remove",
-  describe: "Remove note by id",
-  builder: {
-    id: {
-      type: "string",
-      describe: "Remove note",
-      demandOption: true,
-    },
-  },
-  handler({ id }) {
-    removeNote(id);
-  },
-});
+// const yargs = require("yargs");
+// const pkg = require("./package.json");
+// // node are acces la toate fisierele si le putem obtine in forma de obiecte
 
-yargs.parse();
+// const { addNote, printNotes, removeNote } = require("./notes.controler");
+
+// yargs.version(pkg.version);
+// // --version
+
+// yargs.command({
+//   command: "add",
+//   describe: "Add new note to list",
+//   builder: {
+//     title: {
+//       type: "string",
+//       describe: "Note title",
+//       demandOption: true,
+//     },
+//   },
+//   handler({ title }) {
+//     addNote(title);
+//   },
+// });
+
+// yargs.command({
+//   command: "list",
+//   describe: "Print all notes",
+//   async handler() {
+//     const notes = await printNotes();
+//   },
+// });
+
+// yargs.command({
+//   command: "remove",
+//   describe: "Remove note by id",
+//   builder: {
+//     id: {
+//       type: "string",
+//       describe: "Remove note",
+//       demandOption: true,
+//     },
+//   },
+//   handler({ id }) {
+//     removeNote(id);
+//   },
+// });
+
+// yargs.parse();
 // inregistram
 
 // node index.js --help - ne arata toate comenzile si descrierile

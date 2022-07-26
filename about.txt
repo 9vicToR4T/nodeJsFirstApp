@@ -1,0 +1,50 @@
+node index mycommand
+
+node index add --title=mytitle
+node index remove --id=someid
+
+
+fs commands 
+	.writeFile(notesPath, JSON.stringify(notes)
+	.readFile(notesPath, { encoding: "utf-8" })
+
+
+// Dopolinitelino. Standartnie moduli
+    // lection 1. es6 imports
+		Cand import module nu lucreaza adaugam in package.json "type" : "module", dar sa nu uitam tipul fileului.
+		Astfel se creeaza tipul module care difera de tipul anterior(functie care se chema singura).
+			import path from "path";
+			import { fileURLToPath } from "url";
+
+			const __filename = fileURLToPath(import.meta.url);
+			const __dirname = path.dirname(__filename);
+	
+	// lection 2. moduli os
+			const os = require("os");
+			console.log(os.platform())
+			// platform operation system
+			console.log(os.arch())
+			// architecture x64
+			console.log(os.cpus())
+			// info about chip ...
+			console.log(os.homedir())
+			// home directory
+
+	// lection 3 . path module
+			const path = require("path")
+
+			console.log(path.dirname(__filename))
+			// directory where we work
+			console.log(path.basename(__filename))
+			// file name where we are
+			console.log(path.extname(__filename).slice(1))
+			// file extension
+
+			console.log(path.parse(__filename))
+			// return an object with file details
+
+			console.log(path.resolve(__filename, "..", "./modules", "./app.js"))
+			// resolve complicated path
+
+			console.log(path.join(__filename, "..", "./modules", "./app.js", "join"));
+			// join make a concatination. work the same like resolve
