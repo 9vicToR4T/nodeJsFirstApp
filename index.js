@@ -1,30 +1,56 @@
 const http = require("http");
 const chalk = require("chalk");
-const fs = require("fs/promises");
+const { addNote, getNotes, removeNote, update } = require("./notes.controler.js");
+const express = require("express");
 const path = require("path");
-const { addNote } = require("./notes.controler.js");
-const express = require("express")
 
 const port = 3000;
-const basePath = path.join(__dirname, "pages");
 
+const app = express();
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+app.set("view engine", "ejs");
+app.set("views", "pages");
+app.use(express.json());
+app.use(express.static(path.resolve(__dirname, "public")));
 
-const app = express()
-app.use(express.urlencoded({
-  extended: true
-}))
-
-app.get("/", (req, res) =>{
-  res.sendFile(path.join(basePath, "index.html"))
-})
-
-app.post("/", async (req, res) => {
-  console.log(req.body, "rb")
-  await addNote(req.body.title)
-  res.sendFile(path.join(basePath, "index.html"));
-  
+app.get("/", async (req, res) => {
+  res.render("index", {
+    title: "My express app",
+    notes: await getNotes(),
+    created: false,
+  });
 });
 
+app.post("/", async (req, res) => {
+  await addNote(req.body.title);
+  res.render("index", {
+    title: "My express app",
+    notes: await getNotes(),
+    created: true,
+  });
+});
+
+app.put("/:id", async (req, res) => {
+  await update({id: req.params.id, title: req.body.title})
+  res.render("index", {
+    title: "My express app",
+    notes: await getNotes(),
+    created: false,
+  });
+});
+
+app.delete("/:id", async (req, res) => {
+  removeNote(req.params.id);
+  res.render("index", {
+    title: "My express app",
+    notes: await getNotes(),
+    created: false,
+  });
+});
 
 app.listen(port, () => {
   console.log(chalk.green(`Server has been started on port ${port}...`));

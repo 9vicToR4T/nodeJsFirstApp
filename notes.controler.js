@@ -39,9 +39,22 @@ async function printNotes() {
     );
   });
 }
-
+async function update(newNote) {
+  const notes = await getNotes();
+  const index = notes.findIndex(el => el.id === newNote.id)
+  notes[index] = {...notes[index], ...newNote}
+  // notes.forEach( note =>{
+  //   if(note.id === newNote.id){
+  //     note.title = newNote.title
+  //   }
+  // })
+  await saveNotes(notes)
+  console.log(chalk.bgCyan(`Note with id: ${notes[index].id} was updated`))
+}
 module.exports = {
   addNote,
   printNotes,
   removeNote,
+  getNotes,
+  update,
 };

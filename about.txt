@@ -48,3 +48,6 @@ fs commands
 
 			console.log(path.join(__filename, "..", "./modules", "./app.js", "join"));
 			// join make a concatination. work the same like resolve
+
+++++  public folder is for static js. this means that this is client js, not server.
+Static means that there are images, js
